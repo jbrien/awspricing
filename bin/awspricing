@@ -6,8 +6,8 @@ from awspricing.s3 import S3
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--category', '-c', choices=["ebs","s3"], help="Pricing data to print out.")
-    parser.add_argument('--format', '-f', choices=["sql"], help="Format of the output. sql: Queries to enter pricing data into enstratius database.")
+    parser.add_argument('--category', '-c', choices=["ebs","storage","glacier","rrs"], help="Pricing data to print out.")
+    parser.add_argument('--format', '-f', choices=["sql","csv"], help="Format of the output. sql: Queries to enter pricing data into enstratius database. csv: Comma-separated values of pricing data.")
     parser.add_argument('--cloudid', type=int, help="AWS cloud ID for SQL output.")
     parser.add_argument('--startid', type=int, help="Start number of primary key for SQL output.")
     cmd_args = parser.parse_args()
@@ -17,14 +17,27 @@ if __name__ == '__main__':
         sys.exit(1)
     elif cmd_args.category == 'ebs':
         pricing = Ebs()
-    elif cmd_args.category == 's3':
+    elif cmd_args.category in ['storage','glacier','rrs']:
         pricing = S3()
 
     if cmd_args.format == 'sql':
+        if cmd_args.category in ['glacier','rrs']:
+            print("Error. SQL not supported.")
+            sys.exit(1)
         if cmd_args.cloudid is not None:
             pricing.cloud_id = cmd_args.cloudid
         if cmd_args.startid is not None:
             pricing.start_id = cmd_args.startid
-        pricing_queries = pricing.getSQL()
-        for query in pricing_queries:
-            print query
+        result = pricing.getSQL()
+    elif cmd_args.format == 'csv':
+        if cmd_args.category == 'storage':
+            result = pricing.getCSV(selected_type='storage')
+        elif cmd_args.category == 'glacier':
+            result = pricing.getCSV(selected_type='glacierStorage')
+        elif cmd_args.category == 'rrs':
+            result = pricing.getCSV(selected_type='reducedRedundancyStorage')
+        elif cmd_args.category == 'ebs':
+            result = pricing.getCSV(selected_type='ebsVols')
+
+    for row in result:
+        print row
