@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+import sys
+import argparse
+from awspricing.ebs import Ebs
+from awspricing.s3 import S3
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--category', '-c', choices=["ebs","s3"], help="Category of the pricing.")
+    parser.add_argument('--format', '-f', choices=["sql"], help="Format of the output.")
+    parser.add_argument('--cloudid', type=int, help="AWS cloud ID for SQL output.")
+    parser.add_argument('--startid', type=int, help="Start number of primary key for SQL output.")
+    cmd_args = parser.parse_args()
+
+    if cmd_args.format is None or cmd_args.category is None:
+        parser.print_help()
+        sys.exit(1)
+    elif cmd_args.category == 'ebs':
+        pricing = Ebs()
+    elif cmd_args.category == 's3':
+        pricing = S3()
+
+    if cmd_args.format == 'sql':
+        if cmd_args.cloudid is not None:
+            pricing.cloud_id = cmd_args.cloudid
+        if cmd_args.startid is not None:
+            pricing.start_id = cmd_args.startid
+        pricing_queries = pricing.getSQL()
+        for query in pricing_queries:
+            print query
