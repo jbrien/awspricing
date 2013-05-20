@@ -6,8 +6,8 @@ from awspricing.s3 import S3
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--category', '-c', choices=["ebs","s3"], help="Category of the pricing.")
-    parser.add_argument('--format', '-f', choices=["sql"], help="Format of the output.")
+    parser.add_argument('--category', '-c', choices=["ebs","s3"], help="Pricing data to print out.")
+    parser.add_argument('--format', '-f', choices=["sql"], help="Format of the output. sql: Queries to enter pricing data into enstratius database.")
     parser.add_argument('--cloudid', type=int, help="AWS cloud ID for SQL output.")
     parser.add_argument('--startid', type=int, help="Start number of primary key for SQL output.")
     cmd_args = parser.parse_args()
