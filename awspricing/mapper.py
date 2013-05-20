@@ -30,7 +30,7 @@ STORAGE_DESCRIPTION_MAP = {
 STORAGE_PRICING_THRESHOLD_MAP = {
     "firstTBstorage"    : 0,
     "next49TBstorage"   : 1000,
-    "next450TBstorage"  : 5000,
+    "next450TBstorage"  : 50000,
     "next500TBstorage"  : 500000,
     "next4000TBstorage" : 1000000,
     "over5000TBstorage" : 5000000
