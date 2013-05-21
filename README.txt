@@ -13,12 +13,12 @@ sudo python setup.py install
 
 Usage
 -----
-usage: awspricing [-h] [--category {ebs,storage,glacier,rrs}]
+usage: awspricing [-h] [--category {ebs,storage,glacier,rrs,rds}]
                   [--format {sql,csv}] [--cloudid CLOUDID] [--startid STARTID]
 
 optional arguments:
   -h, --help            show this help message and exit
-  --category {ebs,storage,glacier,rrs}, -c {ebs,storage,glacier,rrs}
+  --category {ebs,storage,glacier,rrs,rds}, -c {ebs,storage,glacier,rrs,rds}
                         Pricing data to print out.
   --format {sql,csv}, -f {sql,csv}
                         Format of the output. sql: Queries to enter pricing
@@ -26,6 +26,7 @@ optional arguments:
                         values of pricing data.
   --cloudid CLOUDID     AWS cloud ID for SQL output.
   --startid STARTID     Start number of primary key for SQL output.
+
 
 Special Thanks
 --------------
