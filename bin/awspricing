@@ -2,11 +2,12 @@
 import sys
 import argparse
 from awspricing.ebs import Ebs
+from awspricing.rds import Rds
 from awspricing.s3 import S3
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--category', '-c', choices=["ebs","storage","glacier","rrs"], help="Pricing data to print out.")
+    parser.add_argument('--category', '-c', choices=["ebs","storage","glacier","rrs","rds"], help="Pricing data to print out.")
     parser.add_argument('--format', '-f', choices=["sql","csv"], help="Format of the output. sql: Queries to enter pricing data into enstratius database. csv: Comma-separated values of pricing data.")
     parser.add_argument('--cloudid', type=int, help="AWS cloud ID for SQL output.")
     parser.add_argument('--startid', type=int, help="Start number of primary key for SQL output.")
@@ -17,6 +18,8 @@ if __name__ == '__main__':
         sys.exit(1)
     elif cmd_args.category == 'ebs':
         pricing = Ebs()
+    elif cmd_args.category == 'rds':
+        pricing = Rds()
     elif cmd_args.category in ['storage','glacier','rrs']:
         pricing = S3()
 
@@ -38,6 +41,8 @@ if __name__ == '__main__':
             result = pricing.getCSV(selected_type='reducedRedundancyStorage')
         elif cmd_args.category == 'ebs':
             result = pricing.getCSV(selected_type='ebsVols')
+        elif cmd_args.category == 'rds':
+            result = pricing.getCSV()
 
     for row in result:
         print row
