@@ -10,7 +10,7 @@ class Rds(Base):
             'mysql_std': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/mysql/pricing-standard-deployments.json").read()),
             'oracle_std': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/oracle/pricing-li-standard-deployments.json").read()),
             'oracle_byol': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/oracle/pricing-byol-standard-deployments.json").read()),
-            'mssql_std': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/sqlserver/sqlserver-li-se-ondemand.json").read())
+#            'mssql_std': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/sqlserver/sqlserver-li-se-ondemand.json").read())
         }
         self.rds_dbengine = {
             'mysql_std': ['MYSQL51', 'MYSQL55'],
