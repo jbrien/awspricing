@@ -41,57 +41,49 @@ RDS_MAP = {
                                "name"        : "Micro DB Instance",
                                "memory_in_gb": 0.63,
                                "core_count"  : 1,
-                               "cpu_power"   : 1.2,
-                               "io_units"    : 0
+                               "cpu_power"   : 1.2
                              },
     "dbInstClass.smDBInst" : { "product_size": "db.m1.small",
                                "name"        : "Small DB Instance",
                                "memory_in_gb": 1.7,
                                "core_count"  : 1,
-                               "cpu_power"   : 1.2,
-                               "io_units"    : 0
+                               "cpu_power"   : 1.2
                              },
     "dbInstClass.medDBInst": { "product_size": "db.m1.medium",
                                "name"        : "Medium DB Instance",
                                "memory_in_gb": 3.75,
                                "core_count"  : 1,
-                               "cpu_power"   : 2.4,
-                               "io_units"    : 0
+                               "cpu_power"   : 2.4
                              },
     "dbInstClass.lgDBInst" : { "product_size": "db.m1.large",
                                "name"        : "Large DB Instance",
                                "memory_in_gb": 7.5,
                                "core_count"  : 2,
-                               "cpu_power"   : 2.4,
-                               "io_units"    : 500000
+                               "cpu_power"   : 2.4
                              },
     "dbInstClass.xlDBInst" : { "product_size": "db.m1.xlarge",
                                "name"        : "Extra Large DB Instance",
                                "memory_in_gb": 15,
                                "core_count"  : 4,
-                               "cpu_power"   : 2.4,
-                               "io_units"    : 1000000
+                               "cpu_power"   : 2.4
                              },
     "hiMemDBInstClass.xlDBInst": { "product_size": "db.m2.xlarge",
                                    "name"        : "High-Memory Extra Large DB Instance",
                                    "memory_in_gb": 17.1,
                                    "core_count"  : 2,
-                                   "cpu_power"   : 3.9,
-                                   "io_units"    : 0
+                                   "cpu_power"   : 3.9
                                  },
     "hiMemDBInstClass.xxlDBInst": { "product_size": "db.m2.2xlarge",
                                     "name"        : "High-Memory Double Extra Large DB Instance",
                                     "memory_in_gb": 34,
                                     "core_count"  : 4,
-                                    "cpu_power"   : 3.9,
-                                    "io_units"    : 0
+                                    "cpu_power"   : 3.9
                                   },
     "hiMemDBInstClass.xxxxDBInst": { "product_size": "db.m2.4xlarge",
                                      "name"        : "High-Memory Quadruple Extra Large DB Instance",
                                      "memory_in_gb": 68,
                                      "core_count"  : 8,
-                                     "cpu_power"   : 3.9,
-                                     "io_units"    : 1000000
+                                     "cpu_power"   : 3.9
                                    }
 }
 

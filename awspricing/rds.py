@@ -46,7 +46,7 @@ class Rds(Base):
                         core_count = rds_spec['core_count']
                         cpu_power = rds_spec['cpu_power']
                         memory_in_gb = rds_spec['memory_in_gb']
-                        io_units = rds_spec['io_units']
+                        io_units = 1000000
                         maximum_storage_in_gb = 0
                         minimum_storage_in_gb = 5
                         description = "64-bit, %s GB RAM, %s x %s GHz CPU Core" %\
