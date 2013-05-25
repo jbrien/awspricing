@@ -4,6 +4,7 @@ import awspricing.mapper
 from awspricing.base import Base
 
 class S3(Base):
+    """ Class for S3 pricing. """
     def __init__(self):
         Base.__init__(self)
         self.json_data = json.loads(urllib.urlopen("http://aws.amazon.com/s3/pricing/pricing-storage.json").read())
@@ -11,6 +12,11 @@ class S3(Base):
         self.rate = self.json_data['config']['rate']
 
     def getSQL(self):
+        """ Returns a list of SQL statements.
+
+        :returns: a list of SQL statemnets that contains pricing data.
+        :rtype: list
+        """
         storage_product_id = self.start_id
         queries = []
         for region in self.json_data['config']['regions']:
@@ -34,6 +40,14 @@ class S3(Base):
         return queries
 
     def getCSV(self, selected_type):
+        """ Returns a list of CSV.
+
+        Keyword arguments:
+        :param selected_type: the type of the product to be returned. i.e. storage, clacier, rrs.
+
+        :returns: a list of CSV that contains pricing data.
+        :rtype: list
+        """
         csv = []
         csv.append("RegionID, Storage Type, Currency, Pricing, Rate")
         for region in self.json_data['config']['regions']:

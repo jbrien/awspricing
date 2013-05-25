@@ -4,6 +4,7 @@ import awspricing.mapper
 from awspricing.base import Base
 
 class Ebs(Base):
+    """ Class for EBS pricing. """
     def __init__(self):
         Base.__init__(self)
         self.json_data = json.loads(urllib.urlopen("http://aws.amazon.com/ec2/pricing/pricing-ebs.json").read())
@@ -11,6 +12,11 @@ class Ebs(Base):
         self.rate = self.json_data['config']['rate']
 
     def getSQL(self):
+        """ Returns a list of SQL statements.
+
+        :returns: a list of SQL statemnets that contains pricing data.
+        :rtype: list
+        """
         queries = []
         volume_product_id = self.start_id
         pricing_threshold = 0
@@ -30,6 +36,14 @@ class Ebs(Base):
         return queries
 
     def getCSV(self, selected_type='ebsVols'):
+        """ Returns a list of CSV.
+
+        Keyword arguments:
+        :param selected_type: the type of the product to be returned.
+
+        :returns: a list of CSV that contains pricing data.
+        :rtype: list
+        """
         csv = []
         name="EBS Storage"
         csv.append("RegionID, Storage Type, Currency, Pricing, Rate")

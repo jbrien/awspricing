@@ -4,6 +4,7 @@ import awspricing.mapper
 from awspricing.base import Base
 
 class Rds(Base):
+    """ Class for RDBMS pricing. """
     def __init__(self):
         Base.__init__(self)
         self.rds_json = {
@@ -16,13 +17,18 @@ class Rds(Base):
             'mysql_std': ['MYSQL51', 'MYSQL55'],
             'oracle_std': ['ORACLE11G'],
             'oracle_byol': ['ORACLE11GX', 'ORACLE11GEX'],
-            'mssql_std': ['mssql_std']
+#            'mssql_std': ['mssql_std']
         }
         self.io_json = json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/pricing-provisioned-db-standard-deploy.json").read())
         self.currency = self.rds_json['mysql_std']['config']['currencies'][0]
         self.rate = self.rds_json['mysql_std']['config']['rate']
 
     def getSQL(self):
+        """ Returns a list of SQL statements.
+
+        :returns: a list of SQL statemnets that contains pricing data.
+        :rtype: list
+        """
         queries = []
         std_storage_rate = dict()
         std_io_rate = dict()
@@ -67,5 +73,10 @@ class Rds(Base):
         return queries
 
     def getCSV(self):
+        """ Returns a list of CSV.
+
+        :returns: a list of CSV that contains pricing data.
+        :rtype: list
+        """
         csv = ["To be implemented."]
         return csv

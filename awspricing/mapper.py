@@ -88,16 +88,56 @@ RDS_MAP = {
 }
 
 def getRegionID(name):
+    """ Returns a region ID from AWS json name.
+
+    Arguments:
+    :param name: region name in AWS json.
+
+    :returns: region ID.
+    :rtype: str
+    """
     return REGION_MAP[name]
 
 def getStorageName(name):
+    """ Returns a storage name from AWS json name.
+
+    Arguments:
+    :param name: storage name in AWS json.
+
+    :returns: storage name.
+    :rtype: str
+    """
     return STORAGE_NAME_MAP[name]
 
 def getStorageDescription(name):
+    """ Returns a description of the storage.
+
+    Arguments:
+    :param name: storage name in AWS json.
+
+    :returns: storage description.
+    :rtype: str
+    """
     return STORAGE_DESCRIPTION_MAP[name]
 
 def getStoragePricingThreshold(name):
+    """ Returns a threshold of the storage.
+
+    Arguments:
+    :param name: storage name in AWS json.
+
+    :returns: storage threshold.
+    :rtype: int
+    """
     return STORAGE_PRICING_THRESHOLD_MAP[name]
 
 def getRdsSpec(name):
+    """ Returns a speicification of RDS.
+
+    Arguments:
+    :param name: RDS name in AWS json.
+
+    :returns: speicification of RDS.
+    :rtype: dict
+    """
     return RDS_MAP[name]
