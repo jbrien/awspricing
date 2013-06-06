@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 import sys
 import argparse
+from awspricing.ec2 import EC2
 from awspricing.ebs import Ebs
 from awspricing.rds import Rds
 from awspricing.s3 import S3
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--category', '-c', choices=["ebs","storage","glacier","rrs","rds"], help="Pricing data to print out.")
+    parser.add_argument('--category', '-c', choices=["ec2","ebs","storage","glacier","rrs","rds"], help="Pricing data to print out.")
     parser.add_argument('--format', '-f', choices=["sql","csv"], help="Format of the output. sql: Queries to enter pricing data into enstratius database. csv: Comma-separated values of pricing data.")
     parser.add_argument('--cloudid', type=int, help="AWS cloud ID for SQL output.")
     parser.add_argument('--startid', type=int, help="Start number of primary key for SQL output.")
@@ -16,6 +17,8 @@ if __name__ == '__main__':
     if cmd_args.format is None or cmd_args.category is None:
         parser.print_help()
         sys.exit(1)
+    elif cmd_args.category == 'ec2':
+        pricing = EC2()
     elif cmd_args.category == 'ebs':
         pricing = Ebs()
     elif cmd_args.category == 'rds':

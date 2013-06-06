@@ -27,6 +27,30 @@ STORAGE_DESCRIPTION_MAP = {
     "over5000TBstorage" : "5000+ TB/Standard"
 }
 
+EC2_TYPE_MAP = {
+    "uODI"            : "t1",
+    "stdODI"          : "m1",
+    "hiMemODI"        : "m2",
+    "secgenstdODI"    : "m3",
+    "clusterGPUI"     : "cg1",
+    "clusterComputeI" : "cc1",
+    "clusterHiMemODI" : "cr1",
+    "hiCPUODI"        : "c1",
+    "hiIoODI"         : "hi1",
+    "hiStoreODI"      : "hs1"
+}
+
+EC2_SIZE_MAP = {
+    "u"         : "micro",
+    "sm"        : "small",
+    "med"       : "medium",
+    "lg"        : "large",
+    "xl"        : "xlarge",
+    "xxl"       : "2xlarge",
+    "xxxxl"     : "4xlarge",
+    "xxxxxxxxl" : "8xlarge"
+}
+
 STORAGE_PRICING_THRESHOLD_MAP = {
     "firstTBstorage"    : 0,
     "next49TBstorage"   : 1000,
@@ -141,3 +165,15 @@ def getRdsSpec(name):
     :rtype: dict
     """
     return RDS_MAP[name]
+
+def getEC2ProductSize(prefix, suffix):
+    """ Returns product_size from AWS json name.
+
+    Arguments:
+    :param prefix: EC2 type in AWS json.
+    :param suffix: EC2 size in AWS json.
+
+    :returns: product_size.
+    :rtype: str
+    """
+    return EC2_TYPE_MAP[prefix] + "." + EC2_SIZE_MAP[suffix]
