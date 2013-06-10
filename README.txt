@@ -1,6 +1,6 @@
 awspricing
 ==========
-Writeen by Sean Kang(@sean_kang)
+Written by Sean Kang(@sean_kang)
 https://github.com/sean-kang/awspricing
 
 Python scripts to retrieve pricing data from Amazon Web Services.
@@ -13,12 +13,12 @@ sudo python setup.py install
 
 Usage
 -----
-usage: awspricing [-h] [--category {ebs,storage,glacier,rrs,rds}]
+usage: awspricing [-h] [--category {ec2,ebs,storage,glacier,rrs,rds}]
                   [--format {sql,csv}] [--cloudid CLOUDID] [--startid STARTID]
 
 optional arguments:
   -h, --help            show this help message and exit
-  --category {ebs,storage,glacier,rrs,rds}, -c {ebs,storage,glacier,rrs,rds}
+  --category {ec2,ebs,storage,glacier,rrs,rds}, -c {ec2,ebs,storage,glacier,rrs,rds}
                         Pricing data to print out.
   --format {sql,csv}, -f {sql,csv}
                         Format of the output. sql: Queries to enter pricing
