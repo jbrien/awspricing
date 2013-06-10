@@ -38,8 +38,8 @@ class EC2(Base):
                     core_count = ec2desc.getVirtualCores(product_size)
                     disk_in_gb = ec2desc.getStorageSize(product_size)
                     memory_in_gb = ec2desc.getMemorySize(product_size)
-                    name = "test"
-                    description = "test"
+                    name = ec2desc.getName(product_size)
+                    description = ec2desc.getDescription(product_size)
                     if product_size in ['t1.micro', 'c1.medium', 'm1.small', 'm1.medium']:
                         architectures = ['I32', 'I64']
                     else:
