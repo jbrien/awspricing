@@ -56,11 +56,21 @@ class EC2(Base):
                         except ValueError:
                             pricing_hourly = "0"
                         for architecture in architectures:
-                            query = "INSERT INTO server_product VALUES(%i, %s, '%s', '%s', '%s', %s, %2.1f, '%s', %s, %2.3f, '%s', '%s', %s, '%s', '%s', '%s', %s, %5.2f);" % (
-                                  server_product_id, self.cloud_id, product_size, active, architecture, core_count,
-                                  cpu_power, description, disk_in_gb, memory_in_gb, name, platform,
-                                  prepayment_term_in_months, region_id, software, self.currency,
-                                  pricing_hourly, standard_pricing_prepaid)
-                            queries.append(query)
-                            server_product_id = server_product_id + 1
+                            if platform == 'WINDOWS': 
+                                query = "INSERT INTO server_product VALUES(%i, %s, '%s', '%s', '%s', %s, %2.1f, '%s', %s, %2.3f, '%s', '%s', %s, '%s', '%s', '%s', %s, %5.2f);" % (
+                                      server_product_id, self.cloud_id, product_size, active, architecture, core_count,
+                                      cpu_power, description, disk_in_gb, memory_in_gb, name, platform,
+                                      prepayment_term_in_months, region_id, software, self.currency,
+                                      pricing_hourly, standard_pricing_prepaid)
+                                queries.append(query)
+                                server_product_id = server_product_id + 1
+                            else :
+                                for p in ['UNIX','UNKNOWN']:
+                                    query = "INSERT INTO server_product VALUES(%i, %s, '%s', '%s', '%s', %s, %2.1f, '%s', %s, %2.3f, '%s', '%s', %s, '%s', '%s', '%s', %s, %5.2f);" % (
+                                          server_product_id, self.cloud_id, product_size, active, architecture, core_count,
+                                          cpu_power, description, disk_in_gb, memory_in_gb, name, p,
+                                          prepayment_term_in_months, region_id, software, self.currency,
+                                          pricing_hourly, standard_pricing_prepaid)
+                                    queries.append(query)
+                                    server_product_id = server_product_id + 1
         return queries
