@@ -53,8 +53,8 @@ class EC2Description(object):
         for row in rows:
             pTags = row.findAll('p')
             if len(pTags) != 0:
-                name = pTags[8].text
-                compute_units = 2.0 if name == "t1.micro" else float(pTags[2].text)
+                product_size = pTags[8].text
+                compute_units = 2.0 if product_size == "t1.micro" else float(pTags[2].text)
                 virtual_cores = int(pTags[3].text.split()[0])
                 if "GiB" in pTags[1].text:
                     memory = float(pTags[1].text.split()[0])
@@ -67,7 +67,8 @@ class EC2Description(object):
                 else:
                     storage = 0
 
-                self.instances[name] = {"compute_units" : compute_units, "memory" : memory, "storage" : storage, "virtual_cores" : virtual_cores}
+                self.instances[product_size] = {"compute_units" : compute_units, "memory" : memory, "storage" : storage, "virtual_cores" : virtual_cores}
+        self.instances['cc1.4xlarge'] = {"compute_units" : 33.5, "memory" : 23, "storage" : 1690, "virtual_cores" : 8}
 
     def getVirtualCores(self, product_size):
         """ Returns the number of virtual cores of EC2 instance.
