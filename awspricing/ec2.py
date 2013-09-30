@@ -1,8 +1,8 @@
 import urllib 
 import json
 import awspricing.mapper
+import awspricing.ec2description as ec2desc
 from awspricing.base import Base
-from awspricing.ec2description import EC2Description
 
 class EC2(Base):
     """ Class for EC2 pricing. """
@@ -19,7 +19,6 @@ class EC2(Base):
         :rtype: list
         """
         server_product_id = self.start_id
-        ec2desc = EC2Description()
         active = 'Y'
         cpu_power = 1000
         prepayment_term_in_months = 0
