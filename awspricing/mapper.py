@@ -108,6 +108,12 @@ RDS_MAP = {
                                      "memory_in_gb": 68,
                                      "core_count"  : 8,
                                      "cpu_power"   : 3.9
+                                   },
+    "clusterHiMemDB.xxxxxxxxl":    { "product_size": "db.cr1.8xlarge",
+                                     "name"        : "High-Memory Cluster Eight Extra Large DB Instance",
+                                     "memory_in_gb": 244,
+                                     "core_count"  : 32,
+                                     "cpu_power"   : 3.3
                                    }
 }
 

@@ -11,7 +11,7 @@ class Rds(Base):
             'mysql_std': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/mysql/pricing-standard-deployments.json").read()),
             'oracle_std': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/oracle/pricing-li-standard-deployments.json").read()),
             'oracle_byol': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/oracle/pricing-byol-standard-deployments.json").read()),
-#            'mssql_std': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/sqlserver/sqlserver-li-se-ondemand.json").read())
+            'mssql_std': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/sqlserver/sqlserver-li-se-ondemand.json").read())
         }
         self.rds_dbengine = {
             'mysql_std': ['MYSQL51', 'MYSQL55'],
@@ -41,34 +41,35 @@ class Rds(Base):
                 elif rate['type'] == 'storageRate':
                     std_storage_rate[region_id] = rate['prices'][self.currency]
         for pricing_type in self.rds_json:
-            for region in self.rds_json[pricing_type]['config']['regions']:
-                region_id = awspricing.mapper.getRegionID(region['region'])
-                for type in region['types']:
-                    for tier in type['tiers']:
-                        rds_name = "%s.%s" % (type['name'],tier['name'])
-                        rds_spec = awspricing.mapper.getRdsSpec(rds_name)
-                        product_size = rds_spec['product_size']
-                        name = rds_spec['name']
-                        core_count = rds_spec['core_count']
-                        cpu_power = rds_spec['cpu_power']
-                        memory_in_gb = rds_spec['memory_in_gb']
-                        io_units = 1000000
-                        maximum_storage_in_gb = 0
-                        minimum_storage_in_gb = 5
-                        description = "64-bit, %s GB RAM, %s x %s GHz CPU Core" %\
-                                      (memory_in_gb, core_count, cpu_power)
-                        try:
-                            pricing = "%.3f" % float(tier['prices'][self.currency])
-                        except ValueError:
-                            pricing = "0"
-                        for dbengine in self.rds_dbengine[pricing_type]:
-                            query = "INSERT INTO rdbms_product VALUES(%i, %i, '%s', '%s', '%s', '%s', %i, %s, '%s', %i, %i, %s, %i, '%s', '%s', '%s', %s, %s, %s, %i);" %\
-                                     (rdbms_product_id, self.cloud_id, region_id, dbengine, 'Y', 'I64',
-                                      core_count, cpu_power, description, io_units, maximum_storage_in_gb,
-                                      memory_in_gb, minimum_storage_in_gb, name, product_size, self.currency,
-                                      pricing, std_io_rate[region_id], std_storage_rate[region_id], 1)
-                            queries.append(query)
-                            rdbms_product_id = rdbms_product_id + 1
+            if pricing_type != 'mssql_std':
+                for region in self.rds_json[pricing_type]['config']['regions']:
+                    region_id = awspricing.mapper.getRegionID(region['region'])
+                    for type in region['types']:
+                        for tier in type['tiers']:
+                            rds_name = "%s.%s" % (type['name'],tier['name'])
+                            rds_spec = awspricing.mapper.getRdsSpec(rds_name)
+                            product_size = rds_spec['product_size']
+                            name = rds_spec['name']
+                            core_count = rds_spec['core_count']
+                            cpu_power = rds_spec['cpu_power']
+                            memory_in_gb = rds_spec['memory_in_gb']
+                            io_units = 1000000
+                            maximum_storage_in_gb = 0
+                            minimum_storage_in_gb = 5
+                            description = "64-bit, %s GB RAM, %s x %s GHz CPU Core" %\
+                                          (memory_in_gb, core_count, cpu_power)
+                            try:
+                                pricing = "%.3f" % float(tier['prices'][self.currency])
+                            except ValueError:
+                                pricing = "0"
+                            for dbengine in self.rds_dbengine[pricing_type]:
+                                query = "INSERT INTO rdbms_product VALUES(%i, %i, '%s', '%s', '%s', '%s', %i, %s, '%s', %i, %i, %s, %i, '%s', '%s', '%s', %s, %s, %s, %i);" %\
+                                         (rdbms_product_id, self.cloud_id, region_id, dbengine, 'Y', 'I64',
+                                          core_count, cpu_power, description, io_units, maximum_storage_in_gb,
+                                          memory_in_gb, minimum_storage_in_gb, name, product_size, self.currency,
+                                          pricing, std_io_rate[region_id], std_storage_rate[region_id], 1)
+                                queries.append(query)
+                                rdbms_product_id = rdbms_product_id + 1
 
         return queries
 
@@ -78,5 +79,31 @@ class Rds(Base):
         :returns: a list of CSV that contains pricing data.
         :rtype: list
         """
-        csv = ["To be implemented."]
+        csv = []
+        std_storage_rate = dict()
+        std_io_rate = dict()
+        csv.append("Product Size, DB engine, Region ID, Currency, Pricing, I/O Rate, Storage Rate")
+        for region in self.io_json['config']['regions']:
+            region_id = awspricing.mapper.getRegionID(region['region'])
+            for rate in region['rates']:
+                if rate['type'] == 'ioRate':
+                    std_io_rate[region_id] = rate['prices'][self.currency]
+                elif rate['type'] == 'storageRate':
+                    std_storage_rate[region_id] = rate['prices'][self.currency]
+        for pricing_type in self.rds_json:
+            for region in self.rds_json[pricing_type]['config']['regions']:
+                region_id = awspricing.mapper.getRegionID(region['region'])
+                for type in region['types']:
+                    for tier in type['tiers']:
+                        rds_name = "%s.%s" % (type['name'],tier['name'])
+                        rds_spec = awspricing.mapper.getRdsSpec(rds_name)
+                        product_size = rds_spec['product_size']
+                        try:
+                            pricing = "%.3f" % float(tier['prices'][self.currency])
+                        except ValueError:
+                            pricing = "0"
+                        row = "%s, %s, %s, %s, %s, %s, %s" % (product_size, pricing_type, region_id,
+                                                              self.currency, pricing, std_io_rate[region_id],
+                                                              std_storage_rate[region_id])
+                        csv.append(row)
         return csv
