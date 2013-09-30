@@ -8,7 +8,7 @@ from awspricing.s3 import S3
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--category', '-c', choices=["ec2","ebs","storage","glacier","rrs","rds"], help="Pricing data to print out.")
+    parser.add_argument('--category', '-c', choices=["ec2","ebs","s3","glacier","rrs","rds"], help="Pricing data to print out. ec2: Elastic Compute Cloud, ebs: Elastic Block Store, s3: Simple Storage Service, glacier: Glacier, rrs: Reduced Redundancy Storage, rds: Cloud Relational Database")
     parser.add_argument('--format', '-f', choices=["sql","csv"], help="Format of the output. sql: Queries to enter pricing data into enstratius database. csv: Comma-separated values of pricing data.")
     parser.add_argument('--cloudid', type=int, help="AWS cloud ID for SQL output.")
     parser.add_argument('--startid', type=int, help="Start number of primary key for SQL output.")
@@ -23,7 +23,7 @@ if __name__ == '__main__':
         pricing = Ebs()
     elif cmd_args.category == 'rds':
         pricing = Rds()
-    elif cmd_args.category in ['storage','glacier','rrs']:
+    elif cmd_args.category in ['s3','glacier','rrs']:
         pricing = S3()
 
     if cmd_args.format == 'sql':
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     elif cmd_args.format == 'csv':
         if cmd_args.category == 'ec2':
             result = pricing.getCSV()
-        elif cmd_args.category == 'storage':
+        elif cmd_args.category == 's3':
             result = pricing.getCSV(selected_type='storage')
         elif cmd_args.category == 'glacier':
             result = pricing.getCSV(selected_type='glacierStorage')
