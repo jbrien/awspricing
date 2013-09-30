@@ -36,7 +36,9 @@ if __name__ == '__main__':
             pricing.start_id = cmd_args.startid
         result = pricing.getSQL()
     elif cmd_args.format == 'csv':
-        if cmd_args.category == 'storage':
+        if cmd_args.category == 'ec2':
+            result = pricing.getCSV()
+        elif cmd_args.category == 'storage':
             result = pricing.getCSV(selected_type='storage')
         elif cmd_args.category == 'glacier':
             result = pricing.getCSV(selected_type='glacierStorage')

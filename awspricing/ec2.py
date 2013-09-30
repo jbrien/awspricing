@@ -74,3 +74,32 @@ class EC2(Base):
                                     queries.append(query)
                                     server_product_id = server_product_id + 1
         return queries
+
+    def getCSV(self):
+        """ Returns a list of CSV.
+
+        :returns: a list of CSV that contains pricing data.
+        :rtype: list
+        """
+        csv = []
+        csv.append("Product Size, Platform, Region ID, Currency, Pricing")
+
+        for region in self.json_data['config']['regions']:
+            region_id = awspricing.mapper.getRegionID(region['region'])
+            for instanceType in region['instanceTypes']:
+                prefix = instanceType['type']
+                for size in instanceType['sizes']:
+                    suffix = size['size']
+                    product_size = awspricing.mapper.getEC2ProductSize(prefix, suffix)
+                    if product_size == 'cc1.8xlarge':
+                        product_size = 'cc2.8xlarge'
+                    for value in size['valueColumns']:
+                        platform = value['name']
+                        try:
+                            pricing_hourly = "%.3f" % float(value['prices'][self.currency])
+                        except ValueError:
+                            pricing_hourly = "0"
+                        row = "%s, %s, %s, %s, %s" % (product_size, platform, region_id,
+                                                      self.currency, pricing_hourly )
+                        csv.append(row)
+        return csv
