@@ -7,7 +7,24 @@ class Ebs(Base):
     """ Class for EBS pricing. """
     def __init__(self):
         Base.__init__(self)
-        self.json_data = json.loads(urllib.urlopen("http://aws.amazon.com/ec2/pricing/pricing-ebs.json").read())
+
+        pricing_data = urllib.urlopen("http://a0.awsstatic.com/pricing/1/ec2/pricing-ebs.min.js").read()
+        find = pricing_data.find("callback(")
+        pricing_data = pricing_data[find+9:]
+        pricing_data = pricing_data[:-2]
+        pricing_data = pricing_data.replace('vers:', '"vers":')
+        pricing_data = pricing_data.replace('config:', '"config":')
+        pricing_data = pricing_data.replace('currencies:', '"currencies":')
+        pricing_data = pricing_data.replace('rate:', '"rate":')
+        pricing_data = pricing_data.replace('regions:', '"regions":')
+        pricing_data = pricing_data.replace('region:', '"region":')
+        pricing_data = pricing_data.replace('types:', '"types":')
+        pricing_data = pricing_data.replace('name:', '"name":')
+        pricing_data = pricing_data.replace('values:', '"values":')
+        pricing_data = pricing_data.replace('prices:', '"prices":')
+        pricing_data = pricing_data.replace('USD:', '"USD":')
+        self.json_data = json.loads(pricing_data)
+
         self.currency = self.json_data['config']['currencies'][0]
         self.rate = self.json_data['config']['rate']
 

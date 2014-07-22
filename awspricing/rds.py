@@ -5,13 +5,14 @@ from awspricing.base import Base
 
 class Rds(Base):
     """ Class for RDBMS pricing. """
+
     def __init__(self):
         Base.__init__(self)
         self.rds_json = {
-            'mysql_std': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/mysql/pricing-standard-deployments.json").read()),
-            'oracle_std': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/oracle/pricing-li-standard-deployments.json").read()),
-            'oracle_byol': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/oracle/pricing-byol-standard-deployments.json").read()),
-            'mssql_std': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/sqlserver/sqlserver-li-se-ondemand.json").read())
+            'mysql_std': self.getJSON("http://a0.awsstatic.com/pricing/1/oracle/pricing-li-standard-deployments.min.js"),
+            'oracle_std': self.getJSON("http://a0.awsstatic.com/pricing/1/oracle/pricing-li-standard-deployments.min.js"),
+            'oracle_byol': self.getJSON("http://a0.awsstatic.com/pricing/1/oracle/pricing-byol-standard-deployments.min.js"),
+            'mssql_std': self.getJSON("http://a0.awsstatic.com/pricing/1/sqlserver/sqlserver-li-se-ondemand.min.js")
         }
         self.rds_dbengine = {
             'mysql_std': ['MYSQL51', 'MYSQL55'],
@@ -19,7 +20,7 @@ class Rds(Base):
             'oracle_byol': ['ORACLE11GX', 'ORACLE11GEX'],
 #            'mssql_std': ['mssql_std']
         }
-        self.io_json = json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/pricing-provisioned-db-standard-deploy.json").read())
+        self.io_json = self.getJSON("http://a0.awsstatic.com/pricing/1/rds/sqlserver/pricing-provisioned-db-standard-deploy.min.js")
         self.currency = self.rds_json['mysql_std']['config']['currencies'][0]
         self.rate = self.rds_json['mysql_std']['config']['rate']
 
@@ -107,3 +108,29 @@ class Rds(Base):
                                                               std_storage_rate[region_id])
                         csv.append(row)
         return csv
+
+    def getJSON(this, url):   
+
+        """ Returns JSON from the Javascript
+            Ugly but it works
+        """
+        pricing_data = urllib.urlopen(url).read()
+        find = pricing_data.find("callback(")
+        pricing_data = pricing_data[find+9:]
+        pricing_data = pricing_data[:-2]
+        pricing_data = pricing_data.replace('vers:', '"vers":')
+        pricing_data = pricing_data.replace('config:', '"config":')
+        pricing_data = pricing_data.replace('currencies:', '"currencies":')
+        pricing_data = pricing_data.replace('USD:', '"USD":')
+        pricing_data = pricing_data.replace('valueColumns:', '"valueColumns":')
+        pricing_data = pricing_data.replace('rate:', '"rate":')
+        pricing_data = pricing_data.replace('rates:', '"rates":')
+        pricing_data = pricing_data.replace('regions:', '"regions":')
+        pricing_data = pricing_data.replace('region:', '"region":')
+        pricing_data = pricing_data.replace('type:', '"type":')
+        pricing_data = pricing_data.replace('types:', '"types":')
+        pricing_data = pricing_data.replace('name:', '"name":')
+        pricing_data = pricing_data.replace('tiers:', '"tiers":')
+        pricing_data = pricing_data.replace('prices:', '"prices":')
+        pricing_data = pricing_data.replace('storageRate:', '"storageRate":')
+        return json.loads(pricing_data)

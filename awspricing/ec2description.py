@@ -5,12 +5,30 @@ EC2_PRODUCTS = {
                     "virtual_cores": 1,
                     "memory": 0.615,
                     "storage": 0},
+#    "t2.micro"  : { "name": "Micro",
+#                    "description": "32-bit or 64-bit, 1 GB RAM, 1 EC2 Compute Units, EBS Storage Only, I/O : Low",
+#                    "compute_units": 1,
+#                    "virtual_cores": 1,
+#                    "memory": 1,
+#                    "storage": 0},
+#    "t2.small"  : { "name": "Small",
+#                    "description": "32-bit or 64-bit, 2 GB RAM, 1 EC2 Compute Units, EBS Storage Only, I/O : Low",
+#                    "compute_units": 1,
+#                    "virtual_cores": 1,
+#                    "memory": 2,
+#                    "storage": 0},    
+#    "t2.medium"  : { "name": "Medium",
+#                    "description": "32-bit or 64-bit, 4 GB RAM, 2 EC2 Compute Units, EBS Storage Only, I/O : Low",
+#                    "compute_units": 1,
+#                    "virtual_cores": 2,
+#                    "memory": 4,
+#                    "storage": 0},  
     "m1.small"  : { "name": "Small",
                     "description": "32-bit or 64-bit, 1.7 GiB RAM, 1 EC2 Compute Unit, 160 GB Disk, I/O : Moderate",
                     "compute_units": 1,
                     "virtual_cores": 1,
                     "memory": 1.7,
-                    "storage": 160},
+                    "storage": 160},                                  
     "m1.medium" : { "name": "Medium",
                     "description": "32-bit or 64-bit, 3.75 GiB RAM, 2 EC2 Compute Units, 410 GB Disk, I/O : Moderate",
                     "compute_units": 2,
@@ -191,6 +209,7 @@ def getVirtualCores(product_size):
     :rtype: int
     """
     return EC2_PRODUCTS[product_size]["virtual_cores"]
+   
 
 def getComputeUnits(product_size):
     """ Returns compute units of EC2 instance.
