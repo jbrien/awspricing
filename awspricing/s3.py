@@ -95,7 +95,15 @@ class S3(Base):
                             pricing = "%.3f" % float(storage_type['prices'][self.currency])
                         except ValueError:
                             pricing = "N/A"
-                        row = "%s, %s, %s, %s, %s" % (region_id, description, self.currency, pricing, self.rate)
-                        csv.append(row)
 
+                        if region_id == 'us-std':
+                            csv_region_id = 'us-east-1'    
+                            row = "%s, %s, %s, %s, %s" % (csv_region_id, description, self.currency, pricing, self.rate)
+                            csv.append(row)
+                            csv_region_id = 'us-east-2'    
+                            row = "%s, %s, %s, %s, %s" % (csv_region_id, description, self.currency, pricing, self.rate)
+                            csv.append(row)
+                        else:  
+                            row = "%s, %s, %s, %s, %s" % (region_id, description, self.currency, pricing, self.rate)
+                            csv.append(row)
         return csv

@@ -52,7 +52,7 @@ class Ebs(Base):
 
         return queries
 
-    def getCSV(self, selected_type='ebsVols'):
+    def getCSV(self, selected_type='Amazon EBS Magnetic volumes'):
         """ Returns a list of CSV.
 
         Keyword arguments:
