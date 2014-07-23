@@ -51,11 +51,25 @@ class S3(Base):
                             pricing = "%.3f" % float(storage_type['prices'][self.currency])
                         except ValueError:
                             pricing = "0"
-                        query = "INSERT INTO storage_product VALUES(%i, %i, '%s', '%s', '%s', '%s', '%s', '%s', %i, %s);" %\
+                        if region_id == 'us-std':
+                            table_region_id = 'us-east-1'
+                            query = "INSERT INTO storage_product VALUES(%i, %i, '%s', '%s', '%s', '%s', '%s', '%s', %i, %s);" %\
+                                (storage_product_id, self.cloud_id, table_region_id, 'standard', 'Y', self.currency,
+                                 name, description, pricing_threshold, pricing)
+                            queries.append(query)
+                            storage_product_id = storage_product_id + 1
+                            table_region_id = 'us-east-2'    
+                            query = "INSERT INTO storage_product VALUES(%i, %i, '%s', '%s', '%s', '%s', '%s', '%s', %i, %s);" %\
+                                (storage_product_id, self.cloud_id, table_region_id, 'standard', 'Y', self.currency,
+                                 name, description, pricing_threshold, pricing)
+                            queries.append(query)
+                            storage_product_id = storage_product_id + 1
+                        else:
+                            query = "INSERT INTO storage_product VALUES(%i, %i, '%s', '%s', '%s', '%s', '%s', '%s', %i, %s);" %\
                                 (storage_product_id, self.cloud_id, region_id, 'standard', 'Y', self.currency,
                                  name, description, pricing_threshold, pricing)
-                        queries.append(query)
-                        storage_product_id = storage_product_id + 1
+                            queries.append(query)
+                            storage_product_id = storage_product_id + 1
 
         return queries
 
