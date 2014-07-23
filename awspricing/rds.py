@@ -9,7 +9,7 @@ class Rds(Base):
     def __init__(self):
         Base.__init__(self)
         self.rds_json = {
-            'mysql_std': self.getJSON("http://a0.awsstatic.com/pricing/1/oracle/pricing-li-standard-deployments.min.js"),
+            'mysql_std': self.getJSON("http://a0.awsstatic.com/pricing/1/mysql/pricing-standard-deployments.min.js"),
             'oracle_std': self.getJSON("http://a0.awsstatic.com/pricing/1/oracle/pricing-li-standard-deployments.min.js"),
             'oracle_byol': self.getJSON("http://a0.awsstatic.com/pricing/1/oracle/pricing-byol-standard-deployments.min.js"),
             'mssql_std': self.getJSON("http://a0.awsstatic.com/pricing/1/sqlserver/sqlserver-li-se-ondemand.min.js")
