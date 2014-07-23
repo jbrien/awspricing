@@ -8,7 +8,7 @@ class Ebs(Base):
     def __init__(self):
         Base.__init__(self)
 
-        pricing_data = urllib.urlopen("http://a0.awsstatic.com/pricing/1/ec2/pricing-ebs.min.js").read()
+        pricing_data = urllib.urlopen("http://a0.awsstatic.com/pricing/1/ebs/pricing-ebs.min.js").read()
         find = pricing_data.find("callback(")
         pricing_data = pricing_data[find+9:]
         pricing_data = pricing_data[:-2]
@@ -37,16 +37,16 @@ class Ebs(Base):
         queries = []
         volume_product_id = self.start_id
         pricing_threshold = 0
-        name="EBS Storage"
-        description="Storage costs for an allocated EBS volume."
+        description=""
         for region in self.json_data['config']['regions']:
             region_id = awspricing.mapper.getRegionID(region['region'])
             for ebs_type in region['types']:
-                if ebs_type['name'] == 'ebsVols':
+                if ebs_type['name'] == 'Amazon EBS Magnetic volumes':
+                    name = ebs_type['name']
                     pricing = float(ebs_type['values'][0]['prices'][self.currency])
                     query = "INSERT INTO volume_product VALUES(%i, %i, '%s', '%s', '%s', '%s', '%s', '%s', %i, %.3f);" %\
                             (volume_product_id, self.cloud_id, region_id, 'standard', 'Y',
-                             self.currency, name, description, pricing_threshold, pricing)
+                             self.currency, name, "Storage costs for allocated " + name, pricing_threshold, pricing)
                     queries.append(query)
                     volume_product_id = volume_product_id + 1
 
