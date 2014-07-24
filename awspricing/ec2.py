@@ -41,6 +41,20 @@ class EC2(Base):
             pricing_data = pricing_data.replace('name:', '"name":')
             pricing_data = pricing_data.replace('prices:', '"prices":')
             pricing_data = pricing_data.replace('USD:', '"USD":')
+
+            if pricing_type == 'linux-od':
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"linux"')
+            elif pricing_type == 'rhel-od':
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"rhel"') 
+            elif pricing_type == 'sles-od':
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"sles"')                
+            elif pricing_type == 'mswin-od':
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"mswin"')   
+            elif pricing_type == 'mswinSQL-od':
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"mswinSQL"')    
+            elif pricing_type == 'mswinSQLWeb-od':
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"mswinSQLWeb"')    
+
             self.json_data[pricing_type] = json.loads(pricing_data)
 
     def getSQL(self):
@@ -82,8 +96,6 @@ class EC2(Base):
                                 platform = "WINDOWS"
                             elif value['name'] == "linux":
                                 platform = "UNIX"
-                            elif value['name'] == "os":
-                                platform = "OS"
                             elif value['name'] == "rhel":
                                 platform = "RHEL"
                             elif value['name'] == "sles":
