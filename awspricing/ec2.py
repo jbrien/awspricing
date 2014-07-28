@@ -1,5 +1,6 @@
 import urllib 
 import json
+import re
 import awspricing.mapper
 import awspricing.ec2description as ec2desc
 from awspricing.base import Base
@@ -8,15 +9,21 @@ class EC2(Base):
     """ Class for EC2 pricing. """
     def __init__(self):
         Base.__init__(self)
-        pricing_list = { 'linux-od': "http://aws.amazon.com/ec2/pricing/json/linux-od.json",
-                         'rhel-od': "http://aws.amazon.com/ec2/pricing/json/rhel-od.json",
-                         'sles-od': "http://aws.amazon.com/ec2/pricing/json/sles-od.json",
-                         'mswin-od': "http://aws.amazon.com/ec2/pricing/json/mswin-od.json",
-                         'mswinSQL-od': "http://aws.amazon.com/ec2/pricing/json/mswinSQL-od.json",
-                         'mswinSQLWeb-od': "http://aws.amazon.com/ec2/pricing/json/mswinSQLWeb-od.json" }
+        pricing_list = { 'linux-od': "http://a0.awsstatic.com/pricing/1/ec2/linux-od.min.js",
+                         'rhel-od': "http://a0.awsstatic.com/pricing/1/ec2/rhel-od.min.js",
+                         'sles-od': "http://a0.awsstatic.com/pricing/1/ec2/sles-od.min.js",
+                         'mswin-od': "http://a0.awsstatic.com/pricing/1/ec2/mswin-od.min.js",
+                         'mswinSQL-od': "http://a0.awsstatic.com/pricing/1/ec2/mswinSQL-od.min.js",
+                         'mswinSQLWeb-od': "http://a0.awsstatic.com/pricing/1/ec2/mswinSQLWeb-od.min.js",
+                         'old-linux-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/linux-od.min.js",
+                         'old-rhel-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/rhel-od.min.js",
+                         'old-sles-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/sles-od.min.js",
+                         'old-mswin-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/mswin-od.min.js",
+                         'old-mswinSQL-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/mswinSQL-od.min.js",
+                         'old-mswinSQLWeb-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/mswinSQLWeb-od.min.js" }
         self.json_data = dict()
         for pricing_type in pricing_list:
-            self.json_data[pricing_type] = json.loads(urllib.urlopen(pricing_list[pricing_type]).read())
+            self.json_data[pricing_type] = self.get_json(pricing_list[pricing_type])
 
     def getSQL(self):
         """ Returns a list of SQL statements.
@@ -50,7 +57,7 @@ class EC2(Base):
                         for value in size['valueColumns']:
                             if value['name'] == "mswin":
                                 platform = "WINDOWS"
-                            elif value['name'] == "linux":
+                            elif value['name'] in ["linux", "os"]:
                                 platform = "UNIX"
                             elif value['name'] == "rhel":
                                 platform = "RHEL"

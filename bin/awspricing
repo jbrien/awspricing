@@ -14,7 +14,7 @@ if __name__ == '__main__':
     parser.add_argument('--startid', type=int, help="Start number of primary key for SQL output.")
     cmd_args = parser.parse_args()
 
-    if cmd_args.format is None or cmd_args.category is None:
+    if None in [cmd_args.format, cmd_args.category]:
         parser.print_help()
         sys.exit(1)
     elif cmd_args.category == 'ec2':
