@@ -38,7 +38,8 @@ class EC2(Base):
         standard_pricing_prepaid  = 0
         software = ''
         queries = []
-        for single_json in self.json_data.values():
+        for key in self.json_data.keys():
+            single_json = self.json_data[key]
             currency = single_json['config']['currencies'][0]
             for region in single_json['config']['regions']:
                 region_id = awspricing.mapper.getRegionID(region['region'])
@@ -57,7 +58,7 @@ class EC2(Base):
                         for value in size['valueColumns']:
                             if value['name'] == "mswin":
                                 platform = "WINDOWS"
-                            elif value['name'] in ["linux", "os"]:
+                            elif value['name'] == "linux":
                                 platform = "UNIX"
                             elif value['name'] == "rhel":
                                 platform = "RHEL"
@@ -67,6 +68,19 @@ class EC2(Base):
                                 platform = "MSWINSQL"
                             elif value['name'] == "mswinSQLWeb":
                                 platform = "MSWINSQLWEB"
+                            elif value['name'] == "os":
+                                if key in ["linux-od","old-linux-od"]:
+                                    platform = "UNIX"
+                                elif key in ["rhel-od","old-rhel-od"]:
+                                    platform = "RHEL"
+                                elif key in ["sles-od","old-sles-od"]:
+                                    platform = "SUSE"
+                                elif key in ["mswin-od","old-mswin-od"]:
+                                    platform = "WINDOWS"
+                                elif key in ["mswinSQL-od","old-mswinSQL-od"]:
+                                    platform = "MSWINSQL"
+                                elif key in ["mswinSQLWeb-od","old-mswinSQLWeb-od"]:
+                                    platform = "MSWINSQLWEB"
                             try:
                                 pricing_hourly = "%.3f" % float(value['prices'][currency])
                             except ValueError:
@@ -98,7 +112,8 @@ class EC2(Base):
         csv = []
         csv.append("Product Size, Platform, Region ID, Currency, Pricing")
 
-        for single_json in self.json_data.values():
+        for key in self.json_data.keys():
+            single_json = self.json_data[key]
             currency = single_json['config']['currencies'][0]
             for region in single_json['config']['regions']:
                 region_id = awspricing.mapper.getRegionID(region['region'])
@@ -106,7 +121,21 @@ class EC2(Base):
                     for size in instanceType['sizes']:
                         product_size = size['size']
                         for value in size['valueColumns']:
-                            platform = value['name']
+                            if value['name'] == "os":
+                                if key in ["linux-od","old-linux-od"]:
+                                    platform = "linux"
+                                elif key in ["rhel-od","old-rhel-od"]:
+                                    platform = "rhel"
+                                elif key in ["sles-od","old-sles-od"]:
+                                    platform = "sles"
+                                elif key in ["mswin-od","old-mswin-od"]:
+                                    platform = "mswin"
+                                elif key in ["mswinSQL-od","old-mswinSQL-od"]:
+                                    platform = "mswinSQL"
+                                elif key in ["mswinSQLWeb-od","old-mswinSQLWeb-od"]:
+                                    platform = "mswinSQLWeb"
+                            else:
+                                platform = value['name']
                             try:
                                 pricing_hourly = "%.3f" % float(value['prices'][currency])
                             except ValueError:
