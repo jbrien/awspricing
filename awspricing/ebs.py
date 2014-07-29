@@ -7,7 +7,7 @@ class Ebs(Base):
     """ Class for EBS pricing. """
     def __init__(self):
         Base.__init__(self)
-        self.json_data = json.loads(urllib.urlopen("http://aws.amazon.com/ec2/pricing/pricing-ebs.json").read())
+        self.json_data = self.get_json("http://a0.awsstatic.com/pricing/1/ebs/pricing-ebs.min.js")
         self.currency = self.json_data['config']['currencies'][0]
         self.rate = self.json_data['config']['rate']
 
@@ -25,7 +25,7 @@ class Ebs(Base):
         for region in self.json_data['config']['regions']:
             region_id = awspricing.mapper.getRegionID(region['region'])
             for ebs_type in region['types']:
-                if ebs_type['name'] == 'ebsVols':
+                if ebs_type['name'] == 'Amazon EBS Magnetic volumes':
                     pricing = float(ebs_type['values'][0]['prices'][self.currency])
                     query = "INSERT INTO volume_product VALUES(%i, %i, '%s', '%s', '%s', '%s', '%s', '%s', %i, %.3f);" %\
                             (volume_product_id, self.cloud_id, region_id, 'standard', 'Y',
@@ -35,27 +35,24 @@ class Ebs(Base):
 
         return queries
 
-    def getCSV(self, selected_type='ebsVols'):
+    def getCSV(self):
         """ Returns a list of CSV.
 
         Keyword arguments:
-        :param selected_type: the type of the product to be returned.
 
         :returns: a list of CSV that contains pricing data.
         :rtype: list
         """
         csv = []
-        name="EBS Storage"
         csv.append("RegionID, Storage Type, Currency, Pricing, Rate")
         for region in self.json_data['config']['regions']:
             region_id = awspricing.mapper.getRegionID(region['region'])
             for ebs_type in region['types']:
-                if ebs_type['name'] == selected_type:
-                    try:
-                        pricing = "%.3f" % float(ebs_type['values'][0]['prices'][self.currency])
-                    except ValueError:
-                        pricing = "N/A"
-                    row = "%s, %s, %s, %s, %s" % (region_id, name, self.currency, pricing, self.rate)
-                    csv.append(row)
+                try:
+                    pricing = "%.3f" % float(ebs_type['values'][0]['prices'][self.currency])
+                except ValueError:
+                    pricing = "N/A"
+                row = "%s, %s, %s, %s, %s" % (region_id, ebs_type['name'], self.currency, pricing, self.rate)
+                csv.append(row)
 
         return csv

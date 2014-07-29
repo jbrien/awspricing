@@ -45,7 +45,7 @@ if __name__ == '__main__':
         elif cmd_args.category == 'rrs':
             result = pricing.getCSV(selected_type='reducedRedundancyStorage')
         elif cmd_args.category == 'ebs':
-            result = pricing.getCSV(selected_type='ebsVols')
+            result = pricing.getCSV()
         elif cmd_args.category == 'rds':
             result = pricing.getCSV()
 
