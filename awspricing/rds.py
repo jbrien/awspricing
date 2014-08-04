@@ -2,15 +2,21 @@ import urllib
 import json
 import awspricing.mapper
 from awspricing.base import Base
+from pprint import pprint
 
 class Rds(Base):
     """ Class for RDBMS pricing. """
     def __init__(self):
         Base.__init__(self)
         rds_pricing_js = {
-            "mysql_std": "http://aws-assets-pricing-prod.s3.amazonaws.com/pricing/rds/mysql/pricing-standard-deployments.js"
+            "mysql_std": "http://aws-assets-pricing-prod.s3.amazonaws.com/pricing/rds/mysql/pricing-standard-deployments.js",
+            #"postgresql_std": "http://aws-assets-pricing-prod.s3.amazonaws.com/pricing/rds/postgresql/pricing-standard-deployments.js",
+            "oracle_std": "http://aws-assets-pricing-prod.s3.amazonaws.com/pricing/rds/oracle/pricing-li-standard-deployments.js",
+            "oracle_byol": "http://aws-assets-pricing-prod.s3.amazonaws.com/pricing/rds/oracle/pricing-byol-standard-deployments.js",
+            #"mssql_std": "http://aws-assets-pricing-prod.s3.amazonaws.com/pricing/rds/sqlserver/sqlserver-li-se-ondemand.js",
+
         }
-        self.io_json = self.get_json("http://aws-assets-pricing-prod.s3.amazonaws.com/pricing/rds/mysql/pricing-data-transfer.js")
+        self.io_json = self.get_json("http://a0.awsstatic.com/pricing/1/rds/oracle/pricing-provisioned-db-standard-deploy.min.js")
         self.rds_json = dict()
         for pricing_type in rds_pricing_js:
             self.rds_json[pricing_type] = self.get_json(rds_pricing_js[pricing_type])
@@ -25,7 +31,17 @@ class Rds(Base):
             'mysql_std': ['MYSQL51', 'MYSQL55'],
             'oracle_std': ['ORACLE11G'],
             'oracle_byol': ['ORACLE11GX', 'ORACLE11GEX'],
-#            'mssql_std': ['mssql_std']
+            'mssql_std': ['mssql_std']
+        }
+        self.minimum_storage = {
+            'mysql_std': 5,
+            'oracle_std': 10,
+            'oracle_byol': 10,
+        }
+        self.maximum_storage = {
+            'mysql_std': 3072,
+            'oracle_std': 3072,
+            'oracle_byol': 3072,
         }
 #        self.io_json = json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/pricing-provisioned-db-standard-deploy.json").read())
         self.currency = self.rds_json['mysql_std']['config']['currencies'][0]
@@ -62,8 +78,8 @@ class Rds(Base):
                             cpu_power = rds_spec['cpu_power']
                             memory_in_gb = rds_spec['memory_in_gb']
                             io_units = 1000000
-                            maximum_storage_in_gb = 0
-                            minimum_storage_in_gb = 5
+                            maximum_storage_in_gb = self.maximum_storage[pricing_type]
+                            minimum_storage_in_gb = self.minimum_storage[pricing_type]
                             description = "64-bit, %s GB RAM, %s x %s GHz CPU Core" %\
                                           (memory_in_gb, core_count, cpu_power)
                             try:
