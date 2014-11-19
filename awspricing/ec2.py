@@ -72,6 +72,7 @@ class EC2(Base):
         active = 'Y'
         cpu_power = 1000
         prepayment_term_in_months = 0
+        pricing_hourly = ''
         standard_pricing_prepaid  = 0
         software = ''
         queries = []
@@ -124,7 +125,8 @@ class EC2(Base):
                                 elif key in ["mswinSQLWeb-od","old-mswinSQLWeb-od"]:
                                     platform = "MSWINSQLWEB"
                             try:
-                                pricing_hourly = "%.3f" % float(value['prices'][currency])
+                                if value['prices'][currency] != None:
+                                    pricing_hourly = "%.3f" % float(value['prices'][currency])
                             except ValueError:
                                 pricing_hourly = "0"
                             for architecture in architectures:
