@@ -2,6 +2,7 @@ REGION_MAP = {
     "us-east"    : "us-east-1",
     "us-west"    : "us-west-1",
     "us-west-2"  : "us-west-2",
+    "us-std"     : "us-std",
     "eu-ireland" : "eu-west-1",
     "apac-sin"   : "ap-southeast-1",
     "apac-syd"   : "ap-southeast-2",

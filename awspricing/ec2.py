@@ -1,3 +1,4 @@
+import sys
 import urllib 
 import json
 import re
@@ -9,21 +10,58 @@ class EC2(Base):
     """ Class for EC2 pricing. """
     def __init__(self):
         Base.__init__(self)
-        pricing_list = { 'linux-od': "http://a0.awsstatic.com/pricing/1/ec2/linux-od.min.js",
+        pricing_list = { 
+                         'linux-od': "http://a0.awsstatic.com/pricing/1/ec2/linux-od.min.js",
                          'rhel-od': "http://a0.awsstatic.com/pricing/1/ec2/rhel-od.min.js",
                          'sles-od': "http://a0.awsstatic.com/pricing/1/ec2/sles-od.min.js",
                          'mswin-od': "http://a0.awsstatic.com/pricing/1/ec2/mswin-od.min.js",
                          'mswinSQL-od': "http://a0.awsstatic.com/pricing/1/ec2/mswinSQL-od.min.js",
-                         'mswinSQLWeb-od': "http://a0.awsstatic.com/pricing/1/ec2/mswinSQLWeb-od.min.js",
+                         'mswinSQLWeb-od': "http://a0.awsstatic.com/pricing/1/ec2/mswinSQLWeb-od.min.js"
                          'old-linux-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/linux-od.min.js",
                          'old-rhel-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/rhel-od.min.js",
                          'old-sles-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/sles-od.min.js",
-                         'old-mswin-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/mswin-od.min.js",
+        }
                          'old-mswinSQL-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/mswinSQL-od.min.js",
                          'old-mswinSQLWeb-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/mswinSQLWeb-od.min.js" }
         self.json_data = dict()
         for pricing_type in pricing_list:
-            self.json_data[pricing_type] = self.get_json(pricing_list[pricing_type])
+            pricing_data = urllib.urlopen(pricing_list[pricing_type]).read()
+            find = pricing_data.find("callback(")
+            pricing_data = pricing_data[find+9:]
+            pricing_data = pricing_data[:-2]
+            pricing_data = pricing_data.replace('vers:', '"vers":')
+            pricing_data = pricing_data.replace('config:', '"config":')
+            pricing_data = pricing_data.replace('valueColumns:', '"valueColumns":')
+            pricing_data = pricing_data.replace('rate:', '"rate":')
+            pricing_data = pricing_data.replace('currencies:', '"currencies":')
+            pricing_data = pricing_data.replace('regions:', '"regions":')
+            pricing_data = pricing_data.replace('region:', '"region":')
+            pricing_data = pricing_data.replace('instanceTypes:', '"instanceTypes":')
+            pricing_data = pricing_data.replace('type:', '"type":')
+            pricing_data = pricing_data.replace('sizes:', '"sizes":')
+            pricing_data = pricing_data.replace('size:', '"size":')
+            pricing_data = pricing_data.replace('vCPU:', '"vCPU":')
+            pricing_data = pricing_data.replace('ECU:', '"ECU":')
+            pricing_data = pricing_data.replace('memoryGiB:', '"memoryGiB":')
+            pricing_data = pricing_data.replace('storageGB:', '"storageGB":')
+            pricing_data = pricing_data.replace('name:', '"name":')
+            pricing_data = pricing_data.replace('prices:', '"prices":')
+            pricing_data = pricing_data.replace('USD:', '"USD":')
+
+            if pricing_type == 'linux-od':
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"linux"')
+            elif pricing_type == 'rhel-od':
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"rhel"') 
+            elif pricing_type == 'sles-od':
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"sles"')                
+            elif pricing_type == 'mswin-od':
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"mswin"')   
+            elif pricing_type == 'mswinSQL-od':
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"mswinSQL"')    
+            elif pricing_type == 'mswinSQLWeb-od':
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"mswinSQLWeb"')    
+
+            self.json_data[pricing_type] = json.loads(pricing_data)
 
     def getSQL(self):
         """ Returns a list of SQL statements.
@@ -46,15 +84,20 @@ class EC2(Base):
                 for instanceType in region['instanceTypes']:
                     for size in instanceType['sizes']:
                         product_size = size['size']
+
+                        if product_size not in ec2desc.EC2_PRODUCTS:
+                            print >> sys.stderr, "No entry in the ec2description EC2_PRODUCTS hash table for this product size:", product_size
+                            continue   
                         core_count = ec2desc.getVirtualCores(product_size)
                         disk_in_gb = ec2desc.getStorageSize(product_size)
                         memory_in_gb = ec2desc.getMemorySize(product_size)
                         name = ec2desc.getName(product_size)
                         description = ec2desc.getDescription(product_size)
-                        if product_size in ['t1.micro', 'c1.medium', 'm1.small', 'm1.medium']:
+                        if product_size in ['t1.micro', 't2.micro', 't2.small', 't2.medium', 'c1.medium', 'm1.small', 'm1.medium']:
                             architectures = ['I32', 'I64']
                         else:
                             architectures = ['I64']
+
                         for value in size['valueColumns']:
                             if value['name'] == "mswin":
                                 platform = "WINDOWS"

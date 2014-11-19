@@ -7,7 +7,27 @@ class S3(Base):
     """ Class for S3 pricing. """
     def __init__(self):
         Base.__init__(self)
-        self.json_data = json.loads(urllib.urlopen("http://aws.amazon.com/s3/pricing/pricing-storage.json").read())
+
+        pricing_data = urllib.urlopen("http://a0.awsstatic.com/pricing/1/s3/pricing-storage-s3.min.js").read()
+        find = pricing_data.find("callback(")
+        pricing_data = pricing_data[find+9:]
+        pricing_data = pricing_data[:-2]
+        pricing_data = pricing_data.replace('vers:', '"vers":')
+        pricing_data = pricing_data.replace('config:', '"config":')
+        pricing_data = pricing_data.replace('currencies:', '"currencies":')
+        pricing_data = pricing_data.replace('rate:', '"rate":')
+        pricing_data = pricing_data.replace('valueColumns:', '"valueColumns":')
+        pricing_data = pricing_data.replace('footnotes:', '"footnotes":')
+        pricing_data = pricing_data.replace('regions:', '"regions":')
+        pricing_data = pricing_data.replace('region:', '"region":')
+        pricing_data = pricing_data.replace('tiers:', '"tiers":')
+        pricing_data = pricing_data.replace('storageTypes:', '"storageTypes":')
+        pricing_data = pricing_data.replace('name:', '"name":')
+        pricing_data = pricing_data.replace('values:', '"values":')
+        pricing_data = pricing_data.replace('type:', '"type":')
+        pricing_data = pricing_data.replace('prices:', '"prices":')
+        pricing_data = pricing_data.replace('USD:', '"USD":')
+        self.json_data = json.loads(pricing_data)
         self.currency = self.json_data['config']['currencies'][0]
         self.rate = self.json_data['config']['rate']
 
@@ -31,11 +51,25 @@ class S3(Base):
                             pricing = "%.3f" % float(storage_type['prices'][self.currency])
                         except ValueError:
                             pricing = "0"
-                        query = "INSERT INTO storage_product VALUES(%i, %i, '%s', '%s', '%s', '%s', '%s', '%s', %i, %s);" %\
+                        if region_id == 'us-std':
+                            table_region_id = 'us-east-1'
+                            query = "INSERT INTO storage_product VALUES(%i, %i, '%s', '%s', '%s', '%s', '%s', '%s', %i, %s);" %\
+                                (storage_product_id, self.cloud_id, table_region_id, 'standard', 'Y', self.currency,
+                                 name, description, pricing_threshold, pricing)
+                            queries.append(query)
+                            storage_product_id = storage_product_id + 1
+                            table_region_id = 'us-east-2'    
+                            query = "INSERT INTO storage_product VALUES(%i, %i, '%s', '%s', '%s', '%s', '%s', '%s', %i, %s);" %\
+                                (storage_product_id, self.cloud_id, table_region_id, 'standard', 'Y', self.currency,
+                                 name, description, pricing_threshold, pricing)
+                            queries.append(query)
+                            storage_product_id = storage_product_id + 1
+                        else:
+                            query = "INSERT INTO storage_product VALUES(%i, %i, '%s', '%s', '%s', '%s', '%s', '%s', %i, %s);" %\
                                 (storage_product_id, self.cloud_id, region_id, 'standard', 'Y', self.currency,
                                  name, description, pricing_threshold, pricing)
-                        queries.append(query)
-                        storage_product_id = storage_product_id + 1
+                            queries.append(query)
+                            storage_product_id = storage_product_id + 1
 
         return queries
 
@@ -61,7 +95,15 @@ class S3(Base):
                             pricing = "%.3f" % float(storage_type['prices'][self.currency])
                         except ValueError:
                             pricing = "N/A"
-                        row = "%s, %s, %s, %s, %s" % (region_id, description, self.currency, pricing, self.rate)
-                        csv.append(row)
 
+                        if region_id == 'us-std':
+                            csv_region_id = 'us-east-1'    
+                            row = "%s, %s, %s, %s, %s" % (csv_region_id, description, self.currency, pricing, self.rate)
+                            csv.append(row)
+                            csv_region_id = 'us-east-2'    
+                            row = "%s, %s, %s, %s, %s" % (csv_region_id, description, self.currency, pricing, self.rate)
+                            csv.append(row)
+                        else:  
+                            row = "%s, %s, %s, %s, %s" % (region_id, description, self.currency, pricing, self.rate)
+                            csv.append(row)
         return csv

@@ -30,7 +30,7 @@ EC2_PRODUCTS = {
                     "compute_units": 1,
                     "virtual_cores": 1,
                     "memory": 1.7,
-                    "storage": 160},
+                    "storage": 160},                                  
     "m1.medium" : { "name": "Medium",
                     "description": "32-bit or 64-bit, 3.75 GiB RAM, 2 EC2 Compute Units, 410 GB Disk, I/O : Moderate",
                     "compute_units": 2,
@@ -228,7 +228,37 @@ EC2_PRODUCTS = {
                     "compute_units": 104,
                     "virtual_cores": 32,
                     "memory": 244,
-                    "storage": 6400}
+                    "storage": 6400},
+    "r3.large":    {"name": "Memory Optimized Large",
+                    "description": "64-bit, 15.25 GiB RAM, 5 EC2 Compute Units, 1 X 32 GB SSD",
+                    "compute_units": 5,
+                    "virtual_cores": 2,
+                    "memory": 15.25,
+                    "storage": 32},
+    "r3.xlarge":   {"name": "Memory Optimized Extra Large",
+                    "description": "64-bit, 30.5 GiB RAM, 10 EC2 Compute Units, 1 X 80 GB SSD",
+                    "compute_units": 10,
+                    "virtual_cores": 4,
+                    "memory": 30.5,
+                    "storage": 80},                                                           
+    "r3.2xlarge":  {"name": "Memory Optimized Two Extra Large",
+                    "description": "64-bit, 61 GiB RAM, 25 EC2 Compute Units, 1 X 160 GB SSD",
+                    "compute_units": 25,
+                    "virtual_cores": 8,
+                    "memory": 61,
+                    "storage": 160},  
+    "r3.4xlarge":  {"name": "Memory Optimized Four Extra Large",
+                    "description": "64-bit, 122 GiB RAM, 62.5 EC2 Compute Units, 1 X 320 GB SSD",
+                    "compute_units": 62.5,
+                    "virtual_cores": 16,
+                    "memory": 122,
+                    "storage": 320},  
+    "r3.8xlarge":  {"name": "Memory Optimized Eight Extra Large",
+                    "description": "64-bit, 244 GiB RAM, 80 EC2 Compute Units, 2 X 320 GB SSD",
+                    "compute_units": 80,
+                    "virtual_cores": 32,
+                    "memory": 244,
+                    "storage": 640}                     
 }
 
 def getVirtualCores(product_size):
@@ -241,6 +271,7 @@ def getVirtualCores(product_size):
     :rtype: int
     """
     return EC2_PRODUCTS[product_size]["virtual_cores"]
+   
 
 def getComputeUnits(product_size):
     """ Returns compute units of EC2 instance.
