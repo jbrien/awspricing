@@ -1,5 +1,5 @@
 import sys
-import urllib 
+import urllib
 import json
 import re
 import awspricing.mapper
@@ -10,17 +10,16 @@ class EC2(Base):
     """ Class for EC2 pricing. """
     def __init__(self):
         Base.__init__(self)
-        pricing_list = { 
+        pricing_list = {
                          'linux-od': "http://a0.awsstatic.com/pricing/1/ec2/linux-od.min.js",
                          'rhel-od': "http://a0.awsstatic.com/pricing/1/ec2/rhel-od.min.js",
                          'sles-od': "http://a0.awsstatic.com/pricing/1/ec2/sles-od.min.js",
                          'mswin-od': "http://a0.awsstatic.com/pricing/1/ec2/mswin-od.min.js",
                          'mswinSQL-od': "http://a0.awsstatic.com/pricing/1/ec2/mswinSQL-od.min.js",
-                         'mswinSQLWeb-od': "http://a0.awsstatic.com/pricing/1/ec2/mswinSQLWeb-od.min.js"
+                         'mswinSQLWeb-od': "http://a0.awsstatic.com/pricing/1/ec2/mswinSQLWeb-od.min.js",
                          'old-linux-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/linux-od.min.js",
                          'old-rhel-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/rhel-od.min.js",
                          'old-sles-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/sles-od.min.js",
-        }
                          'old-mswinSQL-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/mswinSQL-od.min.js",
                          'old-mswinSQLWeb-od': "http://a0.awsstatic.com/pricing/1/ec2/previous-generation/mswinSQLWeb-od.min.js" }
         self.json_data = dict()
@@ -51,15 +50,15 @@ class EC2(Base):
             if pricing_type == 'linux-od':
                 pricing_data = pricing_data.replace('"name":"os"', '"name":"linux"')
             elif pricing_type == 'rhel-od':
-                pricing_data = pricing_data.replace('"name":"os"', '"name":"rhel"') 
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"rhel"')
             elif pricing_type == 'sles-od':
-                pricing_data = pricing_data.replace('"name":"os"', '"name":"sles"')                
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"sles"')
             elif pricing_type == 'mswin-od':
-                pricing_data = pricing_data.replace('"name":"os"', '"name":"mswin"')   
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"mswin"')
             elif pricing_type == 'mswinSQL-od':
-                pricing_data = pricing_data.replace('"name":"os"', '"name":"mswinSQL"')    
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"mswinSQL"')
             elif pricing_type == 'mswinSQLWeb-od':
-                pricing_data = pricing_data.replace('"name":"os"', '"name":"mswinSQLWeb"')    
+                pricing_data = pricing_data.replace('"name":"os"', '"name":"mswinSQLWeb"')
 
             self.json_data[pricing_type] = json.loads(pricing_data)
 
@@ -87,7 +86,7 @@ class EC2(Base):
 
                         if product_size not in ec2desc.EC2_PRODUCTS:
                             print >> sys.stderr, "No entry in the ec2description EC2_PRODUCTS hash table for this product size:", product_size
-                            continue   
+                            continue
                         core_count = ec2desc.getVirtualCores(product_size)
                         disk_in_gb = ec2desc.getStorageSize(product_size)
                         memory_in_gb = ec2desc.getMemorySize(product_size)

@@ -1,4 +1,4 @@
-import urllib 
+import urllib
 import json
 import awspricing.mapper
 from awspricing.base import Base
@@ -22,18 +22,11 @@ class Rds(Base):
         for pricing_type in rds_pricing_js:
             self.rds_json[pricing_type] = self.get_json(rds_pricing_js[pricing_type])
 
-#        self.rds_json = {
-#            'mysql_std': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/mysql/pricing-standard-deployments.json").read()),
-#            'oracle_std': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/oracle/pricing-li-standard-deployments.json").read()),
-#            'oracle_byol': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/oracle/pricing-byol-standard-deployments.json").read()),
-#            'mssql_std': json.loads(urllib.urlopen("http://aws.amazon.com/rds/pricing/sqlserver/sqlserver-li-se-ondemand.json").read())
-#        }
         self.rds_dbengine = {
             'mysql_std': ['MYSQL51', 'MYSQL55'],
             'oracle_std': ['ORACLE11G'],
             'oracle_byol': ['ORACLE11GX', 'ORACLE11GEX'],
             'mssql_std': ['mssql_std']
-        self.io_json = self.getJSON("http://a0.awsstatic.com/pricing/1/rds/sqlserver/pricing-provisioned-db-standard-deploy.min.js")
         }
         self.minimum_storage = {
             'mysql_std': 5,
@@ -134,7 +127,7 @@ class Rds(Base):
                         csv.append(row)
         return csv
 
-    def getJSON(this, url):   
+    def getJSON(this, url):
 
         """ Returns JSON from the Javascript
             Ugly but it works
