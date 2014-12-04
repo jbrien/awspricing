@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='awspricing',
-    version='0.1.1',
+    version='0.1.2',
     author=['Sean Kang', 'John Dilts'],
     author_email=['es.guybrush@gmail.com', "john.dilts@enstratius.com"],
     packages=['awspricing'],
